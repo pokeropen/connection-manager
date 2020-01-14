@@ -23,17 +23,17 @@ public class Message {
 
     private Message(EventType eventType, String roomName, String userName, String message) {
         this.eventType = eventType;
-        this.data = data;
+        this.data = message;
         this.userName = userName;
         this.roomName = roomName;
     }
 
     public static Message of(EventType eventType, String roomName, String userName, String message) {
-        return new Message(eventType, message, userName, roomName);
+        return new Message(eventType, roomName, userName, message);
     }
 
-    public static Message of(EventType eventType, String message) {
-        return new Message(eventType, message, null, null);
+    public static Message of(EventType eventType, String roomName, String message) {
+        return new Message(eventType, roomName, null, message);
     }
 
     public EventType getEventType() {

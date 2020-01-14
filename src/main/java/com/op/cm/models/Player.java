@@ -1,5 +1,6 @@
 package com.op.cm.models;
 
+import org.apache.commons.lang3.StringUtils;
 import org.java_websocket.WebSocket;
 
 /**
@@ -8,26 +9,26 @@ import org.java_websocket.WebSocket;
 public class Player {
 
     private String username = null;
-    private WebSocket session = null;
+    private WebSocket connection = null;
 
-    public Player(String username, WebSocket session) {
+    public Player(String username, WebSocket connection) {
         this.username = username;
-        this.session = session;
+        this.connection = connection;
     }
 
     public boolean isValid() {
-        return username != null;
+        return StringUtils.isNoneBlank(username) && connection != null;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public WebSocket getSession() {
-        return session;
+    public WebSocket getConnection() {
+        return connection;
     }
 
     public void send(String message) {
-        session.send(message);
+        connection.send(message);
     }
 }

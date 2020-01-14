@@ -11,14 +11,14 @@ import com.op.cm.services.CommunicationService;
 public class Util {
 
     private static ICommunicationService communicationService = new CommunicationService();
-    private static ObjectMapper objectMapper = new ObjectMapper();
-    {
-
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-    }
+    private static ObjectMapper objectMapper;
 
     public static ObjectMapper getObjectMapper() {
+        if(objectMapper == null) {
+            objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        }
         return objectMapper;
     }
 

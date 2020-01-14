@@ -9,6 +9,9 @@ import org.java_websocket.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Created by jalagari on 14/01/20.
  */
@@ -25,6 +28,8 @@ public interface ICommunicationService {
     void sendAction(Player player, Message message);
 
     void receivedAction(Player player, Message message);
+
+    Collection<Room> getRooms();
 
     default void parse(WebSocket client, String data) {
         Message message = encode(data);

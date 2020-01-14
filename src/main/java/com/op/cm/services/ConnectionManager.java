@@ -68,7 +68,7 @@ public class ConnectionManager extends WebSocketServer {
     }
 
     public static ConnectionManager getInstance() {
-        return getInstance();
+        return getInstance(DEFAULT_PORT);
     }
 
     public static void start(int port) throws IOException, InterruptedException {
