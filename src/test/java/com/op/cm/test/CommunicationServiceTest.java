@@ -1,4 +1,4 @@
-package com.op.cm.CommmunicationService;
+package com.op.cm.test;
 
 import ch.qos.logback.classic.*;
 import ch.qos.logback.classic.spi.ILoggingEvent;
