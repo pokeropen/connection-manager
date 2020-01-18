@@ -24,14 +24,17 @@ public class ConnectionManager extends WebSocketServer {
     private static Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
     public static int DEFAULT_PORT = 9898;
 
-    private ICommunicationService communicationService = null;
+    protected ICommunicationService communicationService = null;
     private ObjectMapper objectMapper = null;
 
-    private ConnectionManager(Integer port) {
+    protected ConnectionManager(Integer port) {
         super( new InetSocketAddress( port ) );
+        init();
+    }
+
+    protected void init() {
         objectMapper = Util.getObjectMapper();
         communicationService = Util.getCommunicationService();
-
     }
 
     @Override

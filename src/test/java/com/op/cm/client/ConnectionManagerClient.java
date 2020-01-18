@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by jalagari on 14/01/20.
@@ -21,6 +22,8 @@ public class ConnectionManagerClient extends WebSocketClient {
     public Message lastMsg = null;
     public boolean anyError = false;
     public boolean connected = false;
+    public CountDownLatch countDownLatch = new CountDownLatch( 1 );
+
 
     public ConnectionManagerClient() throws URISyntaxException {
         super(new URI("ws://localhost:"+ ConnectionManager.DEFAULT_PORT));
@@ -46,6 +49,7 @@ public class ConnectionManagerClient extends WebSocketClient {
     @Override
     public void onClose(int i, String s, boolean b) {
         connected = false;
+        countDownLatch.countDown();
     }
 
     @Override
