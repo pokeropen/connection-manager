@@ -75,7 +75,8 @@ public class ConnectionManager extends WebSocketServer {
         return getInstance(DEFAULT_PORT);
     }
 
-    public static void start(int port) throws IOException, InterruptedException {
+    public static void start( int port) throws IOException, InterruptedException {
+        System.out.println("Starting Server");
         ConnectionManager connectionManager = getInstance( port );
         connectionManager.start();
 
