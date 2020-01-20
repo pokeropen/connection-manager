@@ -37,6 +37,7 @@ public class ConnectionManagerClient extends WebSocketClient {
     @Override
     public void onMessage(String msg) {
         try {
+            System.out.println("Received Message " + msg);
             lastMsg = Util.getObjectMapper().readValue(msg, Message.class);
             receivedMsg.add(lastMsg);
         } catch (JsonProcessingException e) {

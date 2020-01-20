@@ -8,6 +8,7 @@ import com.op.cm.models.Player;
 import com.op.cm.models.Room;
 import com.op.cm.util.ErrorMessages;
 import org.apache.commons.lang3.StringUtils;
+import org.java_websocket.WebSocket;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,9 +21,11 @@ import java.util.Map;
 public class CommunicationService implements ICommunicationService {
 
     private Map<String, Room> rooms;
+    private Map<WebSocket, Room> webSocketRoomMap;
 
     public CommunicationService() {
         rooms = new HashMap<String, Room>();
+        webSocketRoomMap = new HashMap<WebSocket, Room>();
     }
 
     private Room getRoom(String roomName) {
@@ -43,6 +46,7 @@ public class CommunicationService implements ICommunicationService {
 
             // Add user in room
             room.addPlayer(player);
+            webSocketRoomMap.put(player.getConnection(), room);
 
             // Send notification to room about new player
             String message = String.format("%s joined room", player.getUsername());
@@ -81,6 +85,21 @@ public class CommunicationService implements ICommunicationService {
     @Override
     public Collection<Room> getRooms() {
         return rooms.values();
+    }
+
+    @Override
+    public Room getRoom(WebSocket client) {
+        return webSocketRoomMap.get(client);
+    }
+
+    @Override
+    public Player getPlayer(WebSocket client) {
+        Room room = getRoom(client);
+        Player player = null;
+        if(room != null) {
+            player = room.getPlayer(client);
+        }
+        return player;
     }
 
     private boolean isValid(Room room, Player player) {

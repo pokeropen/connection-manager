@@ -45,6 +45,7 @@ public class ConnectionManager extends WebSocketServer {
     @Override
     public void onClose(WebSocket webSocket, int code, String reason, boolean remote) {
         System.out.println("closed with exit code " + code + " additional info: " + reason);
+        communicationService.close(webSocket);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.op.cm.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.op.cm.models.EventType;
 import com.op.cm.models.Message;
 import com.op.cm.models.Player;
 import com.op.cm.models.Room;
@@ -31,6 +32,10 @@ public interface ICommunicationService {
 
     Collection<Room> getRooms();
 
+    Room getRoom(WebSocket client);
+
+    Player getPlayer(WebSocket client);
+
     default void parse(WebSocket client, String data) {
         Message message = encode(data);
         Player player = new Player(message.getUserName(), client);
@@ -39,13 +44,30 @@ public interface ICommunicationService {
             case JOIN:
                 join(message.getRoomName(), player);
                 break;
-
             case EXIST:
                 exit(message.getRoomName(), player);
                 break;
             case ACTION:
                 receivedAction(player, message);
                 break;
+            default:
+                // Assuming default as Close
+                exit(message.getRoomName(), player);
+
+        }
+    }
+
+    default void close(WebSocket client) {
+        Room room = getRoom(client);
+        if(room != null) {
+            Player player = getPlayer(client);
+            if (player != null) {
+                exit(room.getName(), player);
+            } else {
+                logger.error("Unable to find the Player details for client", client);
+            }
+        } else {
+            logger.error("Unable to find the Room details for client ", client);
         }
     }
 

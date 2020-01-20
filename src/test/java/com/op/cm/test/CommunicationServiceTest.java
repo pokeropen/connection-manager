@@ -48,20 +48,14 @@ import java.util.List;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ConnectionManager.class)
-public class CommunicationServiceTest {
-
-    private static ICommunicationService communicationService;
-    private static ConnectionManager connectionManager;
-
-    @Mock
-    private WebSocket webSocket;
+public class CommunicationServiceTest extends AbstractTest {
 
 
     @BeforeClass
     public static void setup() throws JsonProcessingException {
         communicationService = new CommunicationService();
         connectionManager = Mockito.mock(ConnectionManager.class);
-
+        webSocket = Mockito.mock(WebSocket.class);
     }
 
     @Before
@@ -206,65 +200,14 @@ public class CommunicationServiceTest {
 
         joinMessage = Message.of(EventType.JOIN, "Room 1", "Player 2",null);
         sendMessage(joinMessage);
-        verifyNotification(joinMessage, "Player 2 joined room", 2);
+        verifyNotification(joinMessage.getRoomName(), "Player 2 joined room", 2);
 
         joinMessage = Message.of(EventType.JOIN, "Room 2", "Player 3",null);
         sendMessage(joinMessage);
-        verifyNotification(joinMessage, "Player 3 joined room", 1);
+        verifyNotification(joinMessage.getRoomName(), "Player 3 joined room", 1);
 
         joinMessage = Message.of(EventType.EXIST, "Room 1", "Player 2",null);
         sendMessage(joinMessage);
-        verifyNotification(joinMessage, "Player 2 left room", 1);
-    }
-
-    private void verifyNotification(Message expectedMessage, String message, int noOfSessions) throws JsonProcessingException {
-
-        ArgumentCaptor<Collection> clientsArg = ArgumentCaptor.forClass(Collection.class);
-        ArgumentCaptor<String> notificationArg = ArgumentCaptor.forClass(String.class);
-        Mockito.verify(connectionManager, Mockito.atLeastOnce()).broadcast(notificationArg.capture(), clientsArg.capture());
-
-        assertNotNull("Expected notification argument ", message);
-        Message notifyMessage = Util.getObjectMapper().readValue(notificationArg.getValue(), Message.class);
-        assertEquals("Expected Notification Type Event", EventType.NOTIFICATION, notifyMessage.getEventType());
-        assertEquals("Expected Notification in Room 1", expectedMessage.getRoomName(), notifyMessage.getRoomName());
-        assertEquals("Expected Notification to " + noOfSessions + " sessions" , noOfSessions, clientsArg.getValue().size());
-    }
-
-    private void verifyMessage(String message, Message expectedMessage) throws JsonProcessingException {
-
-        assertNotNull("Expected notification argument ", message);
-        Message notifyMessage = Util.getObjectMapper().readValue(message, Message.class);
-        assertEquals("Expected Notification Type Event", expectedMessage.getEventType(), notifyMessage.getEventType());
-        assertEquals("Expected Notification in Room 1", expectedMessage.getRoomName(), notifyMessage.getRoomName());
-        assertEquals("Expected Notification Message not matching", expectedMessage.getData(), notifyMessage.getData());
-    }
-
-
-    private Collection<Room> sendMessage(Message message) throws JsonProcessingException {
-        String joinMessageStr = Util.getObjectMapper().writeValueAsString(message);
-        communicationService.parse(webSocket, joinMessageStr);
-        return communicationService.getRooms();
-    }
-
-
-    private ListAppender getLogger(Class trackingClass) {
-
-        Logger classLogger = (Logger) LoggerFactory.getLogger(trackingClass);
-        ListAppender listAppender = new ListAppender<>();
-        listAppender.start();
-
-        classLogger.addAppender(listAppender);
-        return listAppender;
-    }
-
-    private String getMessage(ListAppender listAppender, int index) throws Exception {
-        List<ILoggingEvent> logsList = listAppender.list;
-        if(index < logsList.size()) {
-            ILoggingEvent event = logsList.get(index);
-            if(event != null) {
-                return event.getMessage();
-            }
-        }
-        throw new Exception("Log message not found");
+        verifyNotification(joinMessage.getRoomName(), "Player 2 left room", 1);
     }
 }

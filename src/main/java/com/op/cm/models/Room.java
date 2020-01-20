@@ -6,6 +6,7 @@ import org.java_websocket.WebSocket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,13 @@ public class Room {
 
     public List<Player> getConnectedPlayers() {
         return connectedPlayers;
+    }
+
+    public Player getPlayer(WebSocket client) {
+        return connectedPlayers.stream()
+                                .filter((player -> player.getConnection() == client))
+                                .findAny()
+                                .orElse(null);
     }
 
     public int getConnectionSize() {
