@@ -1,7 +1,5 @@
 package com.op.cm.test;
 
-import ch.qos.logback.classic.*;
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.op.cm.api.ICommunicationService;
@@ -12,8 +10,6 @@ import com.op.cm.models.Room;
 import com.op.cm.services.CommunicationService;
 import com.op.cm.services.ConnectionManager;
 import com.op.cm.util.ErrorMessages;
-import com.op.cm.util.Util;
-import javafx.beans.binding.When;
 import org.java_websocket.WebSocket;
 
 import static org.junit.Assert.*;
@@ -28,10 +24,6 @@ import org.junit.runners.MethodSorters;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
