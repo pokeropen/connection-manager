@@ -11,6 +11,10 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<powermock.version>1.6.5</powermock.version>
+
+		<!-- the image that will be created -->
+		<docker.image.name>openpoker/connection-manager</docker.image.name>
+		<docker.image.tag>${project.version}</docker.image.tag>
 	</properties>
 
 	<dependencies>
@@ -157,7 +161,31 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.13</version>
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<repository>${docker.image.name}</repository>
+					<tag>${docker.image.tag}</tag>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>Open Poker</name>
+			<url>https://maven.pkg.github.com/pokeropen</url>
+		</repository>
+	</distributionManagement>
 
 </project>
