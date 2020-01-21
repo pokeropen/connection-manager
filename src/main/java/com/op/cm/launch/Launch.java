@@ -1,6 +1,7 @@
 package com.op.cm.launch;
 
 import com.op.cm.services.ConnectionManager;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,10 +27,11 @@ public class Launch {
         BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
         while ( true ) {
             String in = sysin.readLine();
-            connectionManager.broadcast( in );
-            if( in.equals( "exit" ) ) {
-                connectionManager.stop(1000);
-                break;
+            if(StringUtils.isNotBlank(in)) {
+                if (in.equals("exit")) {
+                    connectionManager.stop(1000);
+                    break;
+                }
             }
         }
     }
