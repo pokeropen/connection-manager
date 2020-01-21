@@ -1,4 +1,4 @@
-name: Build
+name: Build & Deploy
 
 on: [push]
 
@@ -6,6 +6,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    name: Buld Connection Manager
 
     steps:
     - uses: actions/checkout@v1
@@ -15,3 +16,9 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn clean install
+    - name: Deploy to Github Package Registry
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "<settings><servers><server><id>github</id><username>Vijay Kumar Jalagari</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml
+        mvn deploy
