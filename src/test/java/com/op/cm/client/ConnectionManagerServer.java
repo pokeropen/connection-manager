@@ -26,6 +26,11 @@ public class ConnectionManagerServer extends ConnectionManager {
         countDownLatch.countDown();
     }
 
+    public void clear() {
+        getRooms().clear();
+    }
+
+
     public Collection<Room> getRooms() {
         return communicationService.getRooms();
     }

@@ -13,9 +13,7 @@ import com.op.cm.util.ErrorMessages;
 import com.op.cm.util.Util;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import static org.junit.Assert.*;
 
@@ -28,24 +26,42 @@ import java.util.Collection;
  */
 public class ConnectionManagerTest extends AbstractTest {
 
-    ConnectionManagerServer server;
+    static ConnectionManagerServer server;
     ConnectionManagerClient client;
     ConnectionManagerClient client2;
 
-    int timeout = 1000;
+    static int timeout = 1000;
 
-    @Before
-    public void beforeEach() throws URISyntaxException, InterruptedException {
+
+    @BeforeClass
+    public static void start() throws InterruptedException {
         server = new ConnectionManagerServer();
         server.start();
         server.countDownLatch.await();
+
+    }
+
+    @AfterClass
+    public static void close() throws InterruptedException {
+        server.stop(timeout);
+        Thread.sleep(timeout);
+
+    }
+
+    @Before
+    public void beforeEach() throws URISyntaxException, InterruptedException {
+        server.clear();
         client = new ConnectionManagerClient();
         client2 = new ConnectionManagerClient();
     }
 
+
     @After
     public void afterEach() throws IOException, InterruptedException {
-        server.stop();
+        if(client.isOpen())
+            client.closeBlocking();
+        if(client2.isOpen())
+            client2.closeBlocking();
     }
 
     @Test
@@ -90,7 +106,6 @@ public class ConnectionManagerTest extends AbstractTest {
         assertNotNull("Expected message",   client.lastMsg);
         Message expected = Message.of(EventType.NOTIFICATION, "Room 1", null, "User 2 left room");
         verifyNotification(expected, client.lastMsg );
-
     }
 
     @Test

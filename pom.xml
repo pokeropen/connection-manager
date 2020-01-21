@@ -76,7 +76,6 @@
 				<version>2.22.0</version>
 				<configuration>
 					<classpathDependencyExcludes>
-						<classpathDependencyExcludes>ch.qos.logback:logback-classic</classpathDependencyExcludes>
 					</classpathDependencyExcludes>
 				</configuration>
 			</plugin>
