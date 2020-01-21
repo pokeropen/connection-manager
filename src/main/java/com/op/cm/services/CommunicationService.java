@@ -32,11 +32,6 @@ public class CommunicationService implements ICommunicationService {
        return rooms.get(roomName);
     }
 
-    protected void clear() {
-        rooms.clear();
-        webSocketRoomMap.clear();
-    }
-
 
     @Override
     public void join(String roomName, Player player) {

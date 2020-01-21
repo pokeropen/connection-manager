@@ -13,19 +13,24 @@ import java.util.Optional;
 public class Launch {
 
     public static void main(String args[]) throws IOException, InterruptedException {
-        ConnectionManager connectionManager = null;
         Integer port = null;
         try {
             port = Integer.parseInt( args[ 0 ] );
         } catch ( Exception ex ) {
+            port = ConnectionManager.DEFAULT_PORT;
         }
-        try {
-           ConnectionManager.start(ConnectionManager.DEFAULT_PORT);
-            connectionManager = ConnectionManager.getInstance();
-        } catch (Exception e) {
+        System.out.println("Starting Server");
+        ConnectionManager connectionManager = ConnectionManager.getInstance( port );
+        connectionManager.start();
 
-            System.out.println("Error while starting serer ");
-            e.printStackTrace();
+        BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
+        while ( true ) {
+            String in = sysin.readLine();
+            connectionManager.broadcast( in );
+            if( in.equals( "exit" ) ) {
+                connectionManager.stop(1000);
+                break;
+            }
         }
     }
 }

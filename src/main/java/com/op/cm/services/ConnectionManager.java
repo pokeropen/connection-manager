@@ -74,20 +74,4 @@ public class ConnectionManager extends WebSocketServer {
     public static ConnectionManager getInstance() {
         return getInstance(DEFAULT_PORT);
     }
-
-    public static void start( int port) throws IOException, InterruptedException {
-        System.out.println("Starting Server");
-        ConnectionManager connectionManager = getInstance( port );
-        connectionManager.start();
-
-        BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
-        while ( true ) {
-            String in = sysin.readLine();
-            connectionManager.broadcast( in );
-            if( in.equals( "exit" ) ) {
-                connectionManager.stop(1000);
-                break;
-            }
-        }
-    }
 }
