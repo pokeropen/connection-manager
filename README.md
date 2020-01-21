@@ -24,4 +24,4 @@ Without Test
 
 ### Running Application
 
-``` java ```
+``` java -jar target/connection-manager-<version>.jar ```
