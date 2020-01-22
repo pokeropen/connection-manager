@@ -3,6 +3,7 @@ package com.op.cm.test;
 import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.op.cm.api.ICommunicationService;
+import com.op.cm.client.RetryPolicy;
 import com.op.cm.models.EventType;
 import com.op.cm.models.Message;
 import com.op.cm.models.Player;
@@ -15,10 +16,7 @@ import org.java_websocket.WebSocket;
 import static org.junit.Assert.*;
 
 import org.java_websocket.framing.Framedata;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.ArgumentCaptor;
@@ -43,6 +41,7 @@ import java.util.List;
 public class CommunicationServiceTest extends AbstractTest {
 
 
+
     @BeforeClass
     public static void setup() throws JsonProcessingException {
         communicationService = new CommunicationService();
@@ -50,12 +49,19 @@ public class CommunicationServiceTest extends AbstractTest {
         webSocket = Mockito.mock(WebSocket.class);
     }
 
+
     @Before
     public void beforeEach() {
         PowerMockito.mockStatic(ConnectionManager.class);
 
         PowerMockito.when(ConnectionManager.getInstance()).thenReturn(connectionManager);
         PowerMockito.when(ConnectionManager.getInstance(Mockito.anyInt())).thenReturn(connectionManager);
+    }
+
+    @After
+    public void cleanUp() {
+        webSocket.close();
+        communicationService.getRooms().clear();
     }
 
     @Test
@@ -125,9 +131,11 @@ public class CommunicationServiceTest extends AbstractTest {
 
     @Test
     public void testLeaveWithInvalidPlayerName() throws Exception {
+        Message joinMessage = Message.of(EventType.JOIN, "Room 1", "Player 1",null);
+        sendMessage(joinMessage);
 
         ListAppender communicationServiceLog = getLogger(ICommunicationService.class);
-        Message joinMessage = Message.of(EventType.EXIST, "Room 1", "",null);
+        joinMessage = Message.of(EventType.EXIST, "Room 1", "",null);
         sendMessage(joinMessage);
         assertEquals("Expected error in log", ErrorMessages.INVALID_USER_NAME.getName(), getMessage(communicationServiceLog, 0));
 
@@ -140,16 +148,18 @@ public class CommunicationServiceTest extends AbstractTest {
     @Test
     public void testLeave() throws Exception {
         Collection<Room> rooms = communicationService.getRooms();
-        assertEquals("Expected Room added ",1, rooms.size());
+        assertEquals("Expected Room added ",0, rooms.size());
         assertNotNull("Expected rooms list", rooms);
 
+        Message joinMessage = Message.of(EventType.JOIN, "Room 1", "Player 1",null);
+        rooms = sendMessage(joinMessage);
         Room room = rooms.stream().findFirst().get();
         assertNotNull("Expected room", room);
         assertEquals("Expected Player already exists in Room ",1, room.getConnectedPlayers().size());
         assertEquals("Expected Player connection already exists to Room ",1, room.getConnectionSize());
 
 
-        Message joinMessage = Message.of(EventType.EXIST, "Room 1", "Player 1",null);
+        joinMessage = Message.of(EventType.EXIST, "Room 1", "Player 1",null);
         rooms = sendMessage(joinMessage);
 
         room = rooms.stream().findFirst().get();

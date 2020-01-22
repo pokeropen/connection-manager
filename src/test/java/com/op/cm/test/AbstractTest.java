@@ -5,12 +5,14 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.op.cm.api.ICommunicationService;
+import com.op.cm.client.RetryPolicy;
 import com.op.cm.models.EventType;
 import com.op.cm.models.Message;
 import com.op.cm.models.Room;
 import com.op.cm.services.ConnectionManager;
 import com.op.cm.util.Util;
 import org.java_websocket.WebSocket;
+import org.junit.Rule;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,9 @@ public class AbstractTest {
     protected static ConnectionManager connectionManager;
     protected static ICommunicationService communicationService;
     protected static WebSocket webSocket;
+
+    @Rule
+    public RetryPolicy retryPolicy = new RetryPolicy(3);
 
     protected void verifyNotification(String roomName, String message, int noOfSessions) throws JsonProcessingException {
 
