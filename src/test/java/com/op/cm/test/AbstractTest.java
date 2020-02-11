@@ -69,7 +69,7 @@ public class AbstractTest {
 
     protected Collection<Room> sendMessage(Message message) throws JsonProcessingException {
         String joinMessageStr = Util.getObjectMapper().writeValueAsString(message);
-        communicationService.parse(webSocket, joinMessageStr);
+        communicationService.process(webSocket, joinMessageStr);
         return communicationService.getRooms();
     }
 

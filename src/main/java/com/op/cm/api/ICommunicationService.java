@@ -36,7 +36,7 @@ public interface ICommunicationService {
 
     Player getPlayer(WebSocket client);
 
-    default void parse(WebSocket client, String data) {
+    default void process(WebSocket client, String data) {
         Message message = encode(data);
         Player player = new Player(message.getUserName(), client);
 
